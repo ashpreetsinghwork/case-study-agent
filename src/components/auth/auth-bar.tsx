@@ -2,9 +2,18 @@ import { createClient } from "@/lib/supabase/server";
 import { getUserQuota } from "@/lib/quota";
 import { SignOutButton } from "@/components/auth/sign-out-button";
 
-// Minimal "who am I / how much do I have left" strip for the two
-// authenticated pages (/new and /projects/[id]) — middleware already
-// guarantees a session exists by the time either page renders.
+function Avatar({ email }: { email: string }) {
+  const initial = email.trim().charAt(0).toUpperCase() || "?";
+  return (
+    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
+      {initial}
+    </span>
+  );
+}
+
+// Minimal navbar for the two authenticated pages (/new and
+// /projects/[id]) — middleware already guarantees a session exists by the
+// time either page renders.
 export async function AuthBar() {
   const supabase = await createClient();
   const {
@@ -15,11 +24,14 @@ export async function AuthBar() {
   const quota = await getUserQuota(supabase, user.id);
 
   return (
-    <div className="mb-6 flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-      <span className="truncate">{user.email}</span>
+    <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-border pb-3 text-xs text-muted-foreground">
+      <span className="flex min-w-0 items-center gap-2">
+        <Avatar email={user.email ?? "?"} />
+        <span className="truncate">{user.email}</span>
+      </span>
       <span className="flex items-center gap-3">
         {quota && (
-          <span>
+          <span className="hidden sm:inline">
             {quota.maxAttempts === null
               ? `${quota.usedAttempts} case studies started · unlimited`
               : `${quota.usedAttempts} of ${quota.maxAttempts} case studies used`}
