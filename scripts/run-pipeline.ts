@@ -3,7 +3,7 @@
 // local invocation issue is unresolved. Production still goes through the
 // durable Inngest-wrapped versions in src/inngest/functions/.
 //
-// Usage: node --env-file=.env scripts/run-pipeline.ts <projectId>
+// Usage: npx tsx --env-file=.env scripts/run-pipeline.ts <projectId>
 import { runOrganiser } from "../src/pipeline/organiser";
 import { runStrategistUpToGate } from "../src/pipeline/strategist";
 

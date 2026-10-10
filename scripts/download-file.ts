@@ -1,5 +1,5 @@
 // Downloads one project file to /tmp for inspection.
-// Usage: node --env-file=.env scripts/download-file.ts <projectId> <path>
+// Usage: npx tsx --env-file=.env scripts/download-file.ts <projectId> <path>
 import { writeFile } from "node:fs/promises";
 import { getProjectFile } from "../src/lib/storage";
 

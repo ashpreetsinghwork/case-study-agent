@@ -1,6 +1,6 @@
 // One-off check that the Organiser and Strategist LLM calls actually work
 // against real OpenAI structured outputs, without needing storage/Supabase
-// wired up. Run: node --env-file=.env scripts/test-pipeline-llm.ts
+// wired up. Run: npx tsx --env-file=.env scripts/test-pipeline-llm.ts
 import { generateStructured } from "../src/lib/llm";
 import { getSystemPrompt } from "../src/lib/prompts";
 import { getAngles, getTones } from "../src/lib/config";

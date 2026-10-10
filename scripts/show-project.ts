@@ -1,5 +1,5 @@
 // Prints a project's stored files, for quick sanity-checking.
-// Usage: node --env-file=.env scripts/show-project.ts <projectId>
+// Usage: npx tsx --env-file=.env scripts/show-project.ts <projectId>
 import { getProjectFile } from "../src/lib/storage";
 
 const projectId = process.argv[2];

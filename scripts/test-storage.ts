@@ -1,5 +1,5 @@
 // One-off check that Supabase storage is reachable and the bucket exists.
-// Run: node --env-file=.env scripts/test-storage.ts
+// Run: npx tsx --env-file=.env scripts/test-storage.ts
 import { getDb } from "../src/lib/db";
 
 async function main() {

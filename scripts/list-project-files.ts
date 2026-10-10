@@ -1,5 +1,5 @@
 // Lists everything stored for a project, recursively. Usage:
-// node --env-file=.env scripts/list-project-files.ts <projectId>
+// npx tsx --env-file=.env scripts/list-project-files.ts <projectId>
 import { getDb } from "../src/lib/db";
 
 const projectId = process.argv[2];

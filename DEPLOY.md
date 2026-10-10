@@ -89,7 +89,7 @@ deployment path — the pipeline runs in-process, not through Inngest Cloud.
 From your machine, with `.env` filled in locally:
 
 ```bash
-node --env-file=.env scripts/invite-user.ts you@example.com 10
+npx tsx --env-file=.env scripts/invite-user.ts you@example.com 10
 ```
 
 This creates the account, sends a sign-in link to that email, and gives
@@ -100,11 +100,11 @@ app already signed in.
 
 ```bash
 # invite someone new, with their starting quota
-node --env-file=.env scripts/invite-user.ts person@example.com 5
+npx tsx --env-file=.env scripts/invite-user.ts person@example.com 5
 
 # change an existing user's limit (and optionally reset usage back to 0)
-node --env-file=.env scripts/set-user-quota.ts person@example.com 20
-node --env-file=.env scripts/set-user-quota.ts person@example.com 20 reset
+npx tsx --env-file=.env scripts/set-user-quota.ts person@example.com 20
+npx tsx --env-file=.env scripts/set-user-quota.ts person@example.com 20 reset
 ```
 
 There's no admin UI for this yet, these are plain scripts run from your

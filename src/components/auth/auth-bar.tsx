@@ -20,7 +20,9 @@ export async function AuthBar() {
       <span className="flex items-center gap-3">
         {quota && (
           <span>
-            {quota.usedAttempts} of {quota.maxAttempts} case studies used
+            {quota.maxAttempts === null
+              ? `${quota.usedAttempts} case studies started · unlimited`
+              : `${quota.usedAttempts} of ${quota.maxAttempts} case studies used`}
           </span>
         )}
         <SignOutButton />

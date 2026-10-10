@@ -1,6 +1,6 @@
 // Invites a user (invite-only signup: this is the only way a new user is
 // ever created) and sets their initial quota.
-// Run: node --env-file=.env scripts/invite-user.ts <email> [maxAttempts]
+// Run: npx tsx --env-file=.env scripts/invite-user.ts <email> [maxAttempts]
 import { getDb } from "../src/lib/db";
 
 const email = process.argv[2];

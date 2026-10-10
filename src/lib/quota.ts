@@ -1,7 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export interface UserQuota {
-  maxAttempts: number;
+  maxAttempts: number | null; // null = unlimited (supabase/migrations/0002_unlimited_quota.sql)
   usedAttempts: number;
 }
 
