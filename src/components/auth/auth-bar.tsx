@@ -1,15 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getUserQuota } from "@/lib/quota";
 import { SignOutButton } from "@/components/auth/sign-out-button";
-
-function Avatar({ email }: { email: string }) {
-  const initial = email.trim().charAt(0).toUpperCase() || "?";
-  return (
-    <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
-      {initial}
-    </span>
-  );
-}
+import { Avatar } from "@/components/auth/avatar";
 
 // Minimal navbar for the two authenticated pages (/new and
 // /projects/[id]) — middleware already guarantees a session exists by the

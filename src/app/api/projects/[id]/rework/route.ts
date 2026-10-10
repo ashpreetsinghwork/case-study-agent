@@ -3,6 +3,7 @@ import { writeStageStatus } from "@/lib/storage";
 import { runArchitect, resetFixRoundCount } from "@/pipeline/architect";
 import { runReviewWithAutoFix } from "@/pipeline/reviewer";
 import { notifyCaseStudyReady } from "@/pipeline/notify";
+import { markProjectStatus } from "@/lib/projects";
 
 // "Rework entire case study" — regenerates the draft from the same chosen
 // strategy (doesn't re-ask the A/B pick), then reviews + auto-fixes again.
@@ -15,6 +16,7 @@ async function reworkInBackground(projectId: string) {
   } catch (err) {
     console.error(`Rework (architect) failed for project ${projectId}:`, err);
     await writeStageStatus(projectId, "architect", "failed").catch(() => {});
+    await markProjectStatus(projectId, "failed");
     return;
   }
 
@@ -23,9 +25,11 @@ async function reworkInBackground(projectId: string) {
   } catch (err) {
     console.error(`Rework (reviewer) failed for project ${projectId}:`, err);
     await writeStageStatus(projectId, "reviewer", "failed").catch(() => {});
+    await markProjectStatus(projectId, "failed");
     return;
   }
 
+  await markProjectStatus(projectId, "ready");
   await notifyCaseStudyReady(projectId);
 }
 

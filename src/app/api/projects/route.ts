@@ -7,6 +7,7 @@ import { runOrganiser } from "@/pipeline/organiser";
 import { runStrategistUpToGate } from "@/pipeline/strategist";
 import { createClient } from "@/lib/supabase/server";
 import { consumeQuota } from "@/lib/quota";
+import { recordNewProject } from "@/lib/projects";
 
 // TODO: send the "case-study/organiser.requested" Inngest event here instead,
 // once local Inngest invocation (or a real Inngest Cloud account) is sorted.
@@ -93,6 +94,8 @@ export async function POST(request: Request) {
     putProjectFile(projectId, "manifest.json", JSON.stringify(manifest, null, 2)),
     // Who to email once the case study is ready (notify.ts reads this).
     putProjectFile(projectId, "owner.json", JSON.stringify({ userId: user.id, email: user.email })),
+    // Lets "My case studies" list this project without scanning Storage.
+    recordNewProject(projectId, user.id, parsed.data.projectTitle),
     ...files.map((file, i) => putProjectFile(projectId, `uploads/${i}-${file.name}`, file)),
   ]);
 

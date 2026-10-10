@@ -4,6 +4,7 @@ import { selectionSchema } from "@/schemas/strategy";
 import { runArchitect } from "@/pipeline/architect";
 import { runReviewWithAutoFix } from "@/pipeline/reviewer";
 import { notifyCaseStudyReady } from "@/pipeline/notify";
+import { markProjectStatus } from "@/lib/projects";
 
 // TODO: send "case-study/strategy.selected" to Inngest instead, once local
 // invocation (or a real Inngest Cloud account) is sorted — see
@@ -14,6 +15,7 @@ async function runRestOfPipelineInBackground(projectId: string) {
   } catch (err) {
     console.error(`Architect failed for project ${projectId}:`, err);
     await writeStageStatus(projectId, "architect", "failed").catch(() => {});
+    await markProjectStatus(projectId, "failed");
     return;
   }
 
@@ -24,9 +26,11 @@ async function runRestOfPipelineInBackground(projectId: string) {
   } catch (err) {
     console.error(`Reviewer failed for project ${projectId}:`, err);
     await writeStageStatus(projectId, "reviewer", "failed").catch(() => {});
+    await markProjectStatus(projectId, "failed");
     return;
   }
 
+  await markProjectStatus(projectId, "ready");
   await notifyCaseStudyReady(projectId);
 }
 
