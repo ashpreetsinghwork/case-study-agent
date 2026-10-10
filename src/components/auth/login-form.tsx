@@ -32,7 +32,9 @@ export function LoginForm() {
 
     setSending(false);
     if (signInError) {
-      setError("Could not send a sign-in link. Check the email, or ask for an invite.");
+      // Show Supabase's actual reason (e.g. its rate-limit message) instead
+      // of a generic guess — much faster to diagnose when something's off.
+      setError(signInError.message || "Could not send a sign-in link. Check the email, or ask for an invite.");
       return;
     }
     setSent(true);
