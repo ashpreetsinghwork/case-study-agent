@@ -1,0 +1,7 @@
+[
+  { "id": "problem-solver", "label": "Problem-solver", "description": "Leads with the problem's difficulty and the path to a solution." },
+  { "id": "research-led", "label": "Research-led", "description": "Leads with discovery — user research, data, insight generation." },
+  { "id": "systems-thinker", "label": "Systems thinker", "description": "Leads with how the pieces (product, org, constraints) fit together." },
+  { "id": "impact-metrics-led", "label": "Impact / metrics-led", "description": "Leads with measurable outcomes and business impact." },
+  { "id": "craft-led", "label": "Craft-led", "description": "Leads with visual/interaction craft and design decision quality." }
+]

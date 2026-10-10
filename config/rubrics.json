@@ -1,0 +1,6 @@
+{
+  "technical_seo": ["structure", "clarity", "scannability", "heading_hierarchy", "metadata"],
+  "design_head": ["process_depth", "craft", "decision_rationale", "visual_storytelling"],
+  "product_manager": ["problem_framing", "trade_offs", "metrics", "business_impact"],
+  "hr": ["role_clarity", "skimmability", "red_flags", "target_role_fit"]
+}

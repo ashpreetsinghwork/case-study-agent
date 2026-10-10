@@ -1,0 +1,11 @@
+[
+  { "field": "projectTitle", "label": "Project title", "required": true },
+  { "field": "studentRole", "label": "Student's role", "required": true },
+  { "field": "teamSizeAndComposition", "label": "Team size & composition", "required": true },
+  { "field": "duration", "label": "Duration / dates", "required": true },
+  { "field": "problemStatement", "label": "Problem statement", "required": true },
+  { "field": "outcomesAndMetrics", "label": "Outcomes & metrics", "required": false },
+  { "field": "targetAudience", "label": "Target roles / audience", "required": true },
+  { "field": "ndaConstraints", "label": "Confidentiality / NDA constraints", "required": true },
+  { "field": "relevantLinks", "label": "Relevant links", "required": false }
+]

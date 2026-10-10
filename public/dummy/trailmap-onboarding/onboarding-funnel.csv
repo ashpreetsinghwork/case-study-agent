@@ -1,0 +1,5 @@
+step,users_before_redesign,users_after_redesign
+signup_completed,1000,1000
+reached_route_list,912,968
+viewed_a_route_detail,540,861
+saved_first_route,301,704

@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored components from external registries (shadcn/smoothui/etc) —
+    // linted upstream, not against our rules.
+    "src/components/smoothui/**",
   ]),
 ]);
 

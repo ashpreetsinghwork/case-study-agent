@@ -1,0 +1,7 @@
+week,phase,avg_approval_time_days,employee_knows_status_pct,approvals_actioned_within_2_days_pct
+1,baseline,4.5,31,68
+2,baseline,3.9,29,73
+3,baseline,4.6,34,70
+4,baseline,4.2,33,71
+5,pilot,2.1,74,89
+6,pilot,1.8,79,93

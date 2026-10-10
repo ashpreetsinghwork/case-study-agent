@@ -1,0 +1,90 @@
+[
+  {
+    "id": "meta-news-feed-evolution",
+    "company": "Meta",
+    "title": "Evolving the Facebook News Feed to Serve You Better",
+    "sourceFile": "meta-news-feed-evolution.md",
+    "tags": ["content feed", "social feed", "readability", "visual hierarchy", "navigation", "comments", "engagement", "information density", "social media"],
+    "structureNote": "Opens on a user-voiced problem in 1-2 sentences. Splits the solution into named outcome sections (not process phases), each showing a failed attempt before the fix. Closes on 'design is never finished' plus team credit, no numbered reflection."
+  },
+  {
+    "id": "meta-reactions",
+    "company": "Meta",
+    "title": "Reactions: Not Everything in Life Is Likable",
+    "sourceFile": "meta-reactions.md",
+    "tags": ["new feature", "emotional expression", "iconography", "cross-cultural", "internationalization", "input mechanism", "animation", "feature launch", "social media", "emoji"],
+    "structureNote": "Splits the problem into two explicit parallel tracks (what + how) up front. Justifies every option via named guiding principles, and shows early failed prototypes as the thing that taught the final design. Closes on 'nothing is ever finished.'"
+  },
+  {
+    "id": "google-translate-ui",
+    "company": "Google",
+    "title": "Designing the UI of Google Translate",
+    "sourceFile": "google-translate-ui.md",
+    "tags": ["feature discoverability", "hidden feature", "onboarding", "icon redesign", "usage metrics", "localization", "voice interface", "conversational ui", "utility app"],
+    "structureNote": "Opens on a stat revealing users don't know a feature exists. Tells it as one wrong-turn attempt (bigger/louder failed) before the fix (smaller, familiar changes worked), reports a specific surprising usage-lift number, and closes open-ended."
+  },
+  {
+    "id": "microsoft-office-icons",
+    "company": "Microsoft",
+    "title": "Redesigning the Office App Icons to Embrace a New World of Work",
+    "sourceFile": "microsoft-office-icons.md",
+    "tags": ["visual identity", "brand redesign", "icon system", "icon", "icons", "design system", "cross-platform consistency", "rebrand", "logo", "multi-generation users"],
+    "structureNote": "Opens on a vulnerable, relatable line about redesigns being hard. Frames the problem in three short concrete reasons, gives every design decision a one-line rationale attached directly to it, and closes on 'ongoing journey' plus a community/careers call to action."
+  },
+  {
+    "id": "amazon-one-click",
+    "company": "Amazon",
+    "title": "Decoding Amazon UX: the One-Click Purchase Experience",
+    "sourceFile": "amazon-one-click.md",
+    "tags": ["checkout", "conversion", "friction reduction", "e-commerce", "purchase flow", "retention", "habit formation", "industry analysis"],
+    "structureNote": "Opens on quantified historical friction (abandoned-cart rate). Uses plain-question headings instead of phase names, pulls back to a general principle before closing, and cites later industry-wide adoption as retroactive validation."
+  },
+  {
+    "id": "razorpay-product-discovery",
+    "company": "Razorpay",
+    "title": "Redefining Product Discovery at Razorpay",
+    "sourceFile": "razorpay-product-discovery.md",
+    "tags": ["product discovery", "information architecture", "navigation", "b2b saas", "fintech", "payments", "categorization", "competitive analysis"],
+    "structureNote": "States project constraints (solo, timeboxed, handed-down brief, no validation) up front. Dedicates a section to competitor benchmarking, and proposes success metrics as hypotheses rather than reporting real ones, flagging that explicitly rather than inventing numbers."
+  },
+  {
+    "id": "blinkit-search-flow",
+    "company": "Blinkit",
+    "title": "Enhancing Blinkit's Search Flow Experience",
+    "sourceFile": "blinkit-search-flow.md",
+    "tags": ["search", "quick commerce", "grocery delivery", "conversion", "average order value", "filters", "sorting", "usability testing", "india"],
+    "structureNote": "Opens on a persona's lived moment rather than a stat. Names 'secondary vs primary' research explicitly, ties every UI change to a named business metric, shows a revision happening after usability testing (not just a final screen), and closes on personal skills learned."
+  },
+  {
+    "id": "swiggy-onboarding",
+    "company": "Swiggy",
+    "title": "Redesigning Swiggy's New User Onboarding",
+    "sourceFile": "swiggy-onboarding.md",
+    "tags": ["onboarding", "signup flow", "new user experience", "quick commerce", "food delivery", "india", "growth experiment", "ab test", "incentive", "conversion"],
+    "structureNote": "States three concrete objectives up front. Narrates a real but partially-undisclosed A/B result, naming the mechanism and withholding the exact figure rather than inventing one, and closes on a stakeholder-balance reflection."
+  },
+  {
+    "id": "airbnb-material-design",
+    "company": "Airbnb",
+    "title": "Airbnb's UX Design: A Case Study in User-Centricity",
+    "sourceFile": "airbnb-material-design.md",
+    "tags": ["design system", "visual identity", "trust", "marketplace", "cross-platform", "typography", "motion design", "localization", "brand voice", "travel"],
+    "structureNote": "Opens on the business-level trust problem before any screen. Names guiding design characteristics up front and maps every later decision back to one of them, backs each decision with an attributed designer quote, and closes on reception metrics (ratings, awards) rather than usage metrics."
+  },
+  {
+    "id": "uber-pickup-experience",
+    "company": "Uber",
+    "title": "Uber UX Case Study: Improving the Pickup Experience",
+    "sourceFile": "uber-pickup-experience.md",
+    "tags": ["ride hailing", "location accuracy", "pickup flow", "maps", "real-time", "two-sided marketplace", "design challenge"],
+    "structureNote": "Opens on a specific personal anecdote. States the problem as one open question backed by named concrete failure modes, uses quoted personas standing in for real research with access limitations named outright, and ends proposing next research steps rather than claiming a finished result."
+  },
+  {
+    "id": "slack-designing-teamwork",
+    "company": "Slack",
+    "title": "Designing Teamwork: How Our Customers Shaped the Future of Slack",
+    "sourceFile": "slack-designing-teamwork.md",
+    "tags": ["enterprise saas", "collaboration tool", "information architecture", "navigation redesign", "co-design", "customer research", "b2b", "productivity tool", "daily-use product"],
+    "structureNote": "States the problem as countable symptoms of complexity, not an adjective. Names process sections after relationship-with-users beats (not research phases), admits a specific internal miss before the shipped version, and reports outcome comparatively ('beat or tied') rather than as an inflated win."
+  }
+]

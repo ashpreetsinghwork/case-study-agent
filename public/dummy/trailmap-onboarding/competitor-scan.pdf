@@ -1,0 +1,60 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /Resources << /Font << /F1 5 0 R >> >> /MediaBox [0 0 612 792] /Contents 4 0 R >>
+endobj
+4 0 obj
+<< /Length 1518 >>
+stream
+BT /F1 11 Tf 50 740 Td 14 TL
+(Trailmap Competitor Scan) Tj T*
+() Tj T*
+(Topic: How other outdoor/fitness apps handle first-run onboarding) Tj T*
+(Prepared by: Design \(desk research, no vendor data used\)) Tj T*
+() Tj T*
+(General pattern observed across the category) Tj T*
+() Tj T*
+(Most apps in this space ask 2-4 quick questions up front \(experience level, typical distance) Tj T*
+(or duration, preferred terrain\) before showing any content, then use those answers to pick) Tj T*
+(the first few items shown rather than a generic default list.) Tj T*
+() Tj T*
+(A smaller number skip the questions entirely and rely on a generic 'browse everything' list) Tj T*
+(on first open, leaning on search and filters instead of personalization.) Tj T*
+() Tj T*
+(Apps that ask questions up front tend to frame them as quick taps \(single choice, large) Tj T*
+(touch targets\) rather than free text, keeping onboarding under 30 seconds in the flows we) Tj T*
+(tried.) Tj T*
+() Tj T*
+(Implication for Trailmap) Tj T*
+() Tj T*
+(Our current onboarding shows the same unfiltered route list to every new user regardless of) Tj T*
+(fitness level, which the usability notes tie directly to early drop-off. A short skill-level) Tj T*
+(question before the first list render is a well-established pattern in this category, not a) Tj T*
+(novel bet.) Tj T*
+() Tj T*
+(Open question for design: whether to ask preferred terrain as a second question, or hold) Tj T*
+(that for a later moment once a user has saved at least one route.) Tj T*
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000001811 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1881
+%%EOF

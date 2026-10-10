@@ -1,0 +1,6 @@
+[
+  { "id": "confident", "label": "Confident", "description": "Direct claims backed by evidence, minimal hedging." },
+  { "id": "reflective", "label": "Reflective", "description": "Foregrounds what was learned and would be done differently." },
+  { "id": "analytical", "label": "Analytical", "description": "Data- and reasoning-first, low emotive language." },
+  { "id": "conversational", "label": "Conversational", "description": "Plain-spoken, first person, low jargon." }
+]
