@@ -23,6 +23,9 @@ export async function sendCaseStudyReadyEmail({
     from: FROM,
     to,
     subject: `Your case study is ready: ${projectTitle}`,
+    // A plain-text alternative alongside html — spam filters generally
+    // trust multipart emails more than HTML-only ones.
+    text: `Your case study "${projectTitle}" is ready.\n\nOpen it here: ${projectUrl}\n\n(A PDF copy is also attached to this email.)`,
     html: `
       <p>Your case study "${projectTitle}" is ready.</p>
       <p><a href="${projectUrl}">Open it here</a> to read, edit, or download it again — a PDF copy is also attached to this email.</p>

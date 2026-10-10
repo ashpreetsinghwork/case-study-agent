@@ -8,9 +8,22 @@ import type { Scorecard } from "@/schemas/review";
 import type { CalloutEntry, CaseStudySection, ChartEntry } from "@/schemas/draft";
 import { getFixRoundCount } from "@/pipeline/architect";
 import { isReviewComplete } from "@/pipeline/reviewer";
+import { createClient } from "@/lib/supabase/server";
+import { isProjectOwner } from "@/lib/ownership";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id: projectId } = await params;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  // Proxy already guarantees SOME session exists; this checks it's the
+  // right one for THIS project. 404 rather than 403 — don't confirm a
+  // project exists to someone who doesn't own it.
+  if (!user || !(await isProjectOwner(projectId, user.id))) {
+    return NextResponse.json({ error: "Project not found" }, { status: 404 });
+  }
 
   const [intakeFile, organiser, strategist, architect, reviewer] = await Promise.all([
     getProjectFile(projectId, "00_intake.json"),

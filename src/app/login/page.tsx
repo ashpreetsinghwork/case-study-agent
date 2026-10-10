@@ -12,6 +12,10 @@ export default function LoginPage() {
         <Suspense>
           <LoginForm />
         </Suspense>
+        <p className="mt-4 text-xs text-muted-foreground">
+          Early beta: free, limited access to use, explore, and review.
+          Expect things to change.
+        </p>
       </div>
     </main>
   );

@@ -4,6 +4,8 @@ import { runArchitect, resetFixRoundCount } from "@/pipeline/architect";
 import { runReviewWithAutoFix } from "@/pipeline/reviewer";
 import { notifyCaseStudyReady } from "@/pipeline/notify";
 import { markProjectStatus } from "@/lib/projects";
+import { createClient } from "@/lib/supabase/server";
+import { isProjectOwner } from "@/lib/ownership";
 
 // "Rework entire case study" — regenerates the draft from the same chosen
 // strategy (doesn't re-ask the A/B pick), then reviews + auto-fixes again.
@@ -35,6 +37,14 @@ async function reworkInBackground(projectId: string) {
 
 export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id: projectId } = await params;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user || !(await isProjectOwner(projectId, user.id))) {
+    return NextResponse.json({ error: "Project not found" }, { status: 404 });
+  }
 
   void reworkInBackground(projectId);
 

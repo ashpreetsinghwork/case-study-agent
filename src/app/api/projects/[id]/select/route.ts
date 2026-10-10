@@ -5,6 +5,8 @@ import { runArchitect } from "@/pipeline/architect";
 import { runReviewWithAutoFix } from "@/pipeline/reviewer";
 import { notifyCaseStudyReady } from "@/pipeline/notify";
 import { markProjectStatus } from "@/lib/projects";
+import { createClient } from "@/lib/supabase/server";
+import { isProjectOwner } from "@/lib/ownership";
 
 // TODO: send "case-study/strategy.selected" to Inngest instead, once local
 // invocation (or a real Inngest Cloud account) is sorted — see
@@ -36,6 +38,15 @@ async function runRestOfPipelineInBackground(projectId: string) {
 
 export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id: projectId } = await params;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user || !(await isProjectOwner(projectId, user.id))) {
+    return NextResponse.json({ error: "Project not found" }, { status: 404 });
+  }
+
   const body = await request.json().catch(() => null);
 
   const parsed = selectionSchema.safeParse(body);
