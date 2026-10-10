@@ -38,10 +38,19 @@ Configuration → Redirect URLs**, add
 `http://localhost:3000/auth/callback` there too for local dev). Without
 this, the magic-link email will redirect somewhere Supabase refuses.
 
+**Set the Site URL too — this is a separate field on the same page.**
+Still on **Authentication → URL Configuration**, change **Site URL**
+(not the Redirect URLs list above it) from its default
+`http://localhost:3000` to your real deployed domain, e.g.
+`https://your-app.up.railway.app`. This is what the magic-link email
+actually uses as its base — leaving it on localhost is why the sign-in
+button can land on `localhost` even after deploying.
+
 ## 1b. One-time Resend setup
 
-Used to email a user their case study (link + PDF attached) once it's
-ready, so they don't have to keep the tab open.
+Used for two things: emailing a user their case study (link + PDF
+attached) once it's ready, and — once wired into Supabase below — sending
+the actual sign-in/invite emails too.
 
 Sign up at [resend.com](https://resend.com) (free tier is enough for
 light use) and copy an API key from **API Keys**. That's
@@ -50,6 +59,33 @@ defaults to Resend's sandbox sender, which works immediately with no
 setup but looks like it's from Resend rather than you; verify your own
 domain in Resend's dashboard later and set `EMAIL_FROM` once you want a
 real "from" address.
+
+## 1c. Point Supabase's auth emails through Resend (do this — not optional)
+
+Supabase's own built-in mailer (what sends invite and magic-link emails
+by default) has a very low hourly send cap and is explicitly meant for
+testing only, not real use. A handful of invites + sign-in attempts will
+exhaust it and start failing with "email rate limit exceeded." Fix it
+once, here:
+
+1. Supabase dashboard → **Project Settings → Authentication → SMTP
+   Settings** → toggle on **Enable Custom SMTP**.
+2. Fill in:
+   - **Sender email**: `onboarding@resend.dev` (or your own verified
+     domain in Resend, once you've set one up)
+   - **Sender name**: whatever you want invite/sign-in emails to show as
+     the "from" name
+   - **Host**: `smtp.resend.com`
+   - **Port**: `587`
+   - **Username**: `resend` (literally the word "resend")
+   - **Password**: your Resend API key (same value as `RESEND_API_KEY`)
+3. Save.
+
+That's it — auth emails (invites, magic links) now send through Resend's
+much higher limits instead of Supabase's default ones. No other setting
+or code change needed; this only changes how Supabase sends its own
+emails, nothing about how the app sends the "case study is ready" email
+(that already goes through Resend directly via `src/lib/email.ts`).
 
 ## 2. Environment variables
 
