@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Footer } from "@/components/site/footer";
 import { StatusView } from "@/components/projects/status-view";
 import { AuthBar } from "@/components/auth/auth-bar";
 
@@ -15,12 +14,9 @@ export default async function ProjectStatusPage({
   const { id } = await params;
 
   return (
-    <>
-      <main className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
-        <AuthBar />
-        <StatusView projectId={id} />
-      </main>
-      <Footer />
-    </>
+    <main className="mx-auto max-w-5xl px-4 py-16 sm:px-6">
+      <AuthBar />
+      <StatusView projectId={id} />
+    </main>
   );
 }

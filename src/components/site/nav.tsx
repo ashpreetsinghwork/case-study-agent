@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Folders, List, SignOut, X } from "@phosphor-icons/react";
+import { CaretDown, Folders, List, SignOut, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar } from "@/components/auth/avatar";
@@ -72,12 +74,17 @@ export function Nav() {
                 <button
                   type="button"
                   aria-label="Account menu"
-                  className="rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                  className="flex items-center gap-1.5 rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
                 >
                   <Avatar email={email} />
+                  <CaretDown size={12} className="text-muted-foreground" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel className="truncate font-normal text-muted-foreground">
+                  {email}
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link href="/projects">
                     <Folders size={14} />

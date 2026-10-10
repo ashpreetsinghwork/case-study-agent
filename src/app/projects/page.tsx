@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Footer } from "@/components/site/footer";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { listUserProjects, type ProjectSummary } from "@/lib/projects";
@@ -38,8 +37,7 @@ export default async function MyCaseStudiesPage() {
   const quotaExhausted = !!quota && quota.maxAttempts !== null && quota.usedAttempts >= quota.maxAttempts;
 
   return (
-    <>
-      <main className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
+    <main className="mx-auto max-w-4xl px-4 py-16 sm:px-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <h1 className="text-2xl font-semibold text-foreground">My case studies</h1>
           {quotaExhausted ? (
@@ -93,8 +91,6 @@ export default async function MyCaseStudiesPage() {
             ))}
           </ul>
         )}
-      </main>
-      <Footer />
-    </>
+    </main>
   );
 }
