@@ -1,60 +1,98 @@
-import Image from "next/image";
-import { Reveal } from "@/components/site/reveal";
-import draftImage from "../../../public/generated/output-draft.png";
-import summaryImage from "../../../public/generated/output-summary.png";
-import agentJsonImage from "../../../public/generated/output-agent-json.png";
+import { Reveal, RevealGroup } from "@/components/site/reveal";
+
+// Floating-card mockup images (see scripts/generate-stage-mockups.mjs) —
+// real text at small DOM sizes tested unreadable, these read as an actual
+// illustrated preview instead. JSON below stays real code text on
+// purpose — exact syntax is exactly where AI image text rendering breaks.
+function DraftPreview() {
+  return (
+    <div className="flex h-full w-full items-center justify-center p-10">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/generated/mockup-draft.png"
+        alt="A document card titled Outcome with a highlighted 12% to 61% stat and body text lines"
+        className="max-h-full max-w-full object-contain"
+      />
+    </div>
+  );
+}
+
+function SummaryPreview() {
+  return (
+    <div className="flex h-full w-full items-center justify-center p-10">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/generated/mockup-summary.png"
+        alt="A compact card titled Summary with a 98 words badge and body text lines"
+        className="max-h-full max-w-full object-contain"
+      />
+    </div>
+  );
+}
+
+function JsonPreview() {
+  return (
+    <div className="flex h-full w-full items-center justify-center p-10">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/generated/mockup-json.png"
+        alt="A document card titled Structured with a Valid badge and body text lines"
+        className="max-h-full max-w-full object-contain"
+      />
+    </div>
+  );
+}
 
 const ITEMS = [
   {
-    name: "Case study draft",
-    description:
-      "A publish-ready Markdown document, structured section by section from your chosen narrative.",
-    image: draftImage,
-    imageAlt: "A document preview with a heading and paragraph placeholder lines",
+    name: "A full case study draft to kickstart your portfolio write-up",
+    preview: DraftPreview,
+    offset: "",
   },
   {
-    name: "Screening summary",
-    description: "A fixed-length TL;DR covering your role, the problem, approach and outcome.",
-    image: summaryImage,
-    imageAlt: "A short summary card with a word-count badge and a few placeholder lines",
+    name: "A short summary built for quick recruiter skimming",
+    preview: SummaryPreview,
+    offset: "sm:-translate-y-6",
   },
   {
-    name: "Agent-readable JSON",
-    description:
-      "Sections, claims and asset alt text with IDs intact, so other agents can consume it without reparsing prose.",
-    image: agentJsonImage,
-    imageAlt: "A syntax-highlighted JSON code block",
+    name: "Structured JSON you can feed into other tools",
+    preview: JsonPreview,
+    offset: "",
   },
 ];
 
 export function Outputs() {
   return (
-    <section id="outputs" className="mx-auto max-w-7xl px-4 py-24 text-center sm:px-6">
-      <Reveal>
-        <h2 className="mx-auto max-w-xl text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+    <section id="outputs" className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
+      <Reveal className="text-center">
+        <h2 className="mx-auto max-w-xl text-balance text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
           Three things you walk away with
         </h2>
-        <p className="mx-auto mt-3 max-w-[52ch] text-muted-foreground">
+        <p className="mx-auto mt-3 max-w-[52ch] text-pretty text-muted-foreground">
           Every run produces the same set of deliverables, rendered from
           validated JSON, not left to the model to lay out freely.
         </p>
       </Reveal>
 
-      <Reveal delay={0.1} className="mt-12">
-        <div className="grid divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-          {ITEMS.map((item) => (
-            <div key={item.name} className="flex flex-col text-left">
-              <div className="aspect-[3/2] w-full overflow-hidden bg-background">
-                <Image alt={item.imageAlt} className="h-full w-full object-cover" src={item.image} />
-              </div>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold text-foreground">{item.name}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
-              </div>
+      <RevealGroup className="mt-16 grid gap-6 sm:grid-cols-3" stagger={0.1}>
+        {ITEMS.map((item) => (
+          <div
+            key={item.name}
+            className={`flex flex-col overflow-hidden rounded-2xl bg-card shadow-[0_24px_60px_-28px_color-mix(in_oklch,var(--foreground),transparent_82%)] ${item.offset}`}
+          >
+            <div className="relative h-96 bg-card">
+              <item.preview />
+              {/* Fade the media out into the card's own background,
+                  instead of a hard seam between media and caption. */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-b from-transparent to-card backdrop-blur-[2px]"
+              />
             </div>
-          ))}
-        </div>
-      </Reveal>
+            <h3 className="px-6 pb-6 text-pretty text-lg font-medium text-foreground">{item.name}</h3>
+          </div>
+        ))}
+      </RevealGroup>
     </section>
   );
 }
