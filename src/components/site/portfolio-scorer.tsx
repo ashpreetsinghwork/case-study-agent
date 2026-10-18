@@ -338,15 +338,18 @@ function ThemeFlow({
       </div>
 
       <div className="mt-10 flex items-center justify-between">
-        <Button type="button" variant="outline" onClick={onPrev}>
-          <ArrowLeft size={14} />
+        <Button type="button" variant="outline" size="lg" className="h-12 px-7 text-base" onClick={onPrev}>
           Previous
         </Button>
 
         {!isLast && (
-          <Button type="button" variant="outline" onClick={onNext}>
+          <Button
+            type="button"
+            size="lg"
+            className="h-12 bg-foreground px-7 text-base text-background hover:bg-foreground/90"
+            onClick={onNext}
+          >
             Next
-            <ArrowLeft size={14} className="rotate-180" />
           </Button>
         )}
       </div>
