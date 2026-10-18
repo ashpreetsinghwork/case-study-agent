@@ -1,6 +1,9 @@
 import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
-import type { ResponseInputMessageContentList } from "openai/resources/responses/responses";
+import type {
+  ResponseInputMessageContentList,
+  Tool,
+} from "openai/resources/responses/responses";
 import type { z } from "zod";
 
 // OpenAI only (text + images) — decided vendor for all four stages.
@@ -23,6 +26,9 @@ export interface StructuredCallArgs<T> {
   userPrompt: string | ResponseInputMessageContentList;
   schema: z.ZodType<T>;
   schemaName: string;
+  // Hosted Responses API tools (e.g. web_search), omitted by default since
+  // none of the case-study pipeline stages need live internet access.
+  tools?: Tool[];
 }
 
 export async function generateStructured<T>({
@@ -30,6 +36,7 @@ export async function generateStructured<T>({
   userPrompt,
   schema,
   schemaName,
+  tools,
 }: StructuredCallArgs<T>): Promise<T> {
   const response = await getClient().responses.parse({
     model: TEXT_MODEL,
@@ -38,6 +45,7 @@ export async function generateStructured<T>({
       { role: "user", content: userPrompt },
     ],
     text: { format: zodTextFormat(schema, schemaName) },
+    ...(tools ? { tools } : {}),
   });
 
   if (!response.output_parsed) {

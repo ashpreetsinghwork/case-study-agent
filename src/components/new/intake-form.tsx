@@ -244,6 +244,7 @@ export function IntakeForm() {
   const [dragging, setDragging] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [autofilling, setAutofilling] = useState(false);
   const [autofillError, setAutofillError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -315,6 +316,7 @@ export function IntakeForm() {
   const submitForm = async () => {
     setSubmitting(true);
     setErrors({});
+    setSubmitError(null);
 
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
@@ -327,13 +329,23 @@ export function IntakeForm() {
       const res = await fetch("/api/projects", { method: "POST", body: formData });
       if (!res.ok) {
         const body = await res.json().catch(() => null);
-        setErrors(body?.error?.fieldErrors ?? {});
+        const fieldErrors = body?.error?.fieldErrors;
+        if (fieldErrors) {
+          setErrors(fieldErrors);
+        } else {
+          setSubmitError(
+            typeof body?.error === "string"
+              ? body.error
+              : "Something went wrong starting your case study. Please try again."
+          );
+        }
         setSubmitting(false);
         return;
       }
       const { projectId } = await res.json();
       router.push(`/projects/${projectId}`);
     } catch {
+      setSubmitError("Could not reach the server. Check your connection and try again.");
       setSubmitting(false);
     }
   };
@@ -599,6 +611,8 @@ export function IntakeForm() {
           </div>
         </div>
       )}
+
+      {submitError && <p className="mt-6 text-sm text-destructive">{submitError}</p>}
 
       <div className="mt-10 flex items-center justify-between">
         {step > 0 ? (

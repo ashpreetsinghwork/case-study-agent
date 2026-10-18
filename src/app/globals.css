@@ -137,3 +137,66 @@
   background-size: 250% 100%;
   animation: skeleton-shimmer 1.4s ease-in-out infinite;
 }
+
+/* One question/stage sliding in after the next/previous step of the
+   portfolio scorer flow — keyed remounts replay this on every step. */
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-step-in {
+  animation: step-in 0.28s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-step-in {
+    animation: none;
+  }
+}
+
+/* Landing-hero floating theme badges: three stacked badges per corner
+   taking turns — each pair pops in, holds, pops out, then the next pair's
+   turn comes around. A 9s loop split into three 3s slots; each badge's
+   animation-delay (0s/3s/6s, set inline) offsets which slot it owns. */
+@keyframes badge-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(4px) scale(0.92);
+  }
+  5% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  27% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  32% {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.92);
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-badge-pop {
+  opacity: 0;
+  animation: badge-pop 9s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-badge-pop {
+    animation: none;
+  }
+  .animate-badge-pop:first-child {
+    opacity: 1;
+  }
+}

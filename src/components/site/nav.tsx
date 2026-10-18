@@ -51,8 +51,8 @@ export function Nav() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6">
-        <Link href="/" className="text-sm font-semibold tracking-tight">
-          Case Study Agent
+        <Link href="/" className="flex items-center">
+          <img src="/logo.png" alt="Case Study Agent" className="size-8" />
         </Link>
 
         <nav className="hidden items-center gap-8 lg:flex">

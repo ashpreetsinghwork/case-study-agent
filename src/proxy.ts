@@ -6,7 +6,7 @@ import { NextResponse, type NextRequest } from "next/server";
 // session cookie on every request, per @supabase/ssr's documented pattern
 // (the server client in src/lib/supabase/server.ts otherwise sees a stale
 // token once the access token expires mid-session).
-const PUBLIC_PATHS = ["/login", "/auth/callback"];
+const PUBLIC_PATHS = ["/login", "/auth/callback", "/api/score"];
 
 export async function proxy(request: NextRequest) {
   const response = NextResponse.next({ request });
@@ -34,9 +34,10 @@ export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isPublic = PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 
-  // "/" is the marketing landing page — stays public so an invite link's
-  // recipient (or anyone else) can see what this is before signing in.
-  if (pathname === "/" || isPublic) {
+  // "/" and "/score" are marketing/lead-gen pages, so stay public so an
+  // invite link's recipient (or anyone else) can see what this is, and so
+  // the scorer can be shared and used without signing in.
+  if (pathname === "/" || pathname === "/score" || isPublic) {
     return response;
   }
 
