@@ -29,6 +29,11 @@ export interface StructuredCallArgs<T> {
   // Hosted Responses API tools (e.g. web_search), omitted by default since
   // none of the case-study pipeline stages need live internet access.
   tools?: Tool[];
+  // Omitted by default (model's normal sampling temperature) for the
+  // generative pipeline stages. Pass 0 for a judgment/classification call
+  // where the same input should yield the same verdict every time, not a
+  // different answer each run.
+  temperature?: number;
 }
 
 export async function generateStructured<T>({
@@ -37,6 +42,7 @@ export async function generateStructured<T>({
   schema,
   schemaName,
   tools,
+  temperature,
 }: StructuredCallArgs<T>): Promise<T> {
   const response = await getClient().responses.parse({
     model: TEXT_MODEL,
@@ -46,6 +52,7 @@ export async function generateStructured<T>({
     ],
     text: { format: zodTextFormat(schema, schemaName) },
     ...(tools ? { tools } : {}),
+    ...(temperature !== undefined ? { temperature } : {}),
   });
 
   if (!response.output_parsed) {

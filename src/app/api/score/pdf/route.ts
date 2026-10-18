@@ -142,8 +142,17 @@ function layoutCard(doc: PDFKit.PDFDocument, draw: boolean, yStart: number, x: n
 }
 
 export async function POST(request: Request) {
-  const body = (await request.json().catch(() => ({}))) as { answers?: Answers; scores?: number[] };
-  const data = body.scores ? summarize(body.scores) : scoreOf(body.answers ?? {});
+  const body = (await request.json().catch(() => ({}))) as {
+    answers?: Answers;
+    scores?: number[];
+    themeFixes?: { themeName: string; fix: string }[];
+  };
+  const scored = body.scores ? summarize(body.scores) : scoreOf(body.answers ?? {});
+  const topFixes = scored.topFixes.map((t) => {
+    const override = body.themeFixes?.find((f) => f.themeName === t.name)?.fix;
+    return { name: t.name, fix: override ?? t.fix, percent: t.percent };
+  });
+  const data = { ...scored, topFixes };
 
   const doc = new PDFDocument({ margin: 50, size: "A4", bufferPages: true });
   const chunks: Buffer[] = [];

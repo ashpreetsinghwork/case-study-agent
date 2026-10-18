@@ -104,7 +104,16 @@ way a human reviewer would, for example: "Your case study states a clear outcome
 role, and walks through one option you rejected. It's thin on how you used AI, though." Never use
 words like "statements", "checklist", "evidence", "verdict", or say something was "true"/"false"/
 "contradicted"; describe what you actually saw (or didn't), not how you scored it. Do not use em
-dashes in the summary; use a period or comma instead. Keep it under 400 characters.`;
+dashes in the summary; use a period or comma instead. Keep it under 400 characters.
+
+Also write themeFixes: for every theme that has at least one statement you found TRUE, add one
+entry with that theme's exact name (copy it verbatim from the "[Theme Name]" tag next to its
+statements above) and a pinpointed fix. The fix must be specific to what you actually saw: name
+the real project, section, or missing detail, and say exactly what to add or change, e.g. "Your
+'TaskFlow' case study ends at launch with no numbers after, add one line stating what changed for
+users or the business once it shipped" rather than generic advice they could get without you
+reading their portfolio. Skip a theme entirely if none of its statements came back found and true.
+Do not use em dashes.`;
 
   const userPrompt: string | ResponseInputMessageContentList = hasResume
     ? [
@@ -121,6 +130,7 @@ dashes in the summary; use a period or comma instead. Keep it under 400 characte
       userPrompt,
       schema: portfolioAnalysisSchema,
       schemaName: "portfolio_analysis",
+      temperature: 0,
     });
   } catch {
     return NextResponse.json({ error: "Could not analyze those pages right now" }, { status: 502 });
@@ -140,7 +150,13 @@ dashes in the summary; use a period or comma instead. Keep it under 400 characte
   }
 
   const { scores } = scoreOf(merged);
-  return NextResponse.json({ scores, summary: analysis.summary, accessible: analysis.accessible });
+  const themeFixes = analysis.accessible ? analysis.themeFixes : [];
+  return NextResponse.json({
+    scores,
+    summary: analysis.summary,
+    accessible: analysis.accessible,
+    themeFixes,
+  });
 }
 
 async function resumeContent(file: File): Promise<ResponseInputMessageContentList> {

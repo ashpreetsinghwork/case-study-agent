@@ -3,21 +3,14 @@
 import { useMemo, useRef, useState } from "react";
 import { ArrowLeft, Check, CircleNotch, DownloadSimple, X as XIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
-import {
-  BAND_PERCENT_LABELS,
-  BANDS,
-  FLAT,
-  THEMES,
-  scoreOf,
-  summarize,
-  type Answers,
-} from "@/lib/portfolio-score";
+import { BANDS, THEMES, scoreOf, summarize, type Answers } from "@/lib/portfolio-score";
 
 type Stage = "landing" | "onboarding" | "quiz" | "portfolioUpload" | "loading" | "results";
 
 interface Analysis {
   scores: number[];
   summary: string;
+  themeFixes: { themeName: string; fix: string }[];
 }
 
 export function PortfolioScorer() {
@@ -28,11 +21,8 @@ export function PortfolioScorer() {
   const [analyzeError, setAnalyzeError] = useState<string | null>(null);
   const [loadingLabel, setLoadingLabel] = useState("Scoring your portfolio…");
 
-  function selectAnswer(key: string, value: boolean) {
+  function toggleAnswer(key: string, value: boolean) {
     setAnswers((prev) => ({ ...prev, [key]: value }));
-    if (step < FLAT.length - 1) {
-      setTimeout(() => setStep((s) => s + 1), 180);
-    }
   }
 
   function goPrev() {
@@ -44,7 +34,7 @@ export function PortfolioScorer() {
   }
 
   function goNext() {
-    setStep((s) => Math.min(s + 1, FLAT.length - 1));
+    setStep((s) => Math.min(s + 1, THEMES.length - 1));
   }
 
   function finishQuiz() {
@@ -52,7 +42,7 @@ export function PortfolioScorer() {
   }
 
   function backToQuiz() {
-    setStep(FLAT.length - 1);
+    setStep(THEMES.length - 1);
     setStage("quiz");
   }
 
@@ -83,13 +73,18 @@ export function PortfolioScorer() {
         signal: controller.signal,
       });
       if (!res.ok) throw new Error("scan failed");
-      const data = (await res.json()) as { scores: number[]; summary: string; accessible: boolean };
+      const data = (await res.json()) as {
+        scores: number[];
+        summary: string;
+        accessible: boolean;
+        themeFixes: { themeName: string; fix: string }[];
+      };
       if (!data.accessible) {
         setAnalysis(null);
         setAnalyzeError(`Couldn't read those pages. ${data.summary} Showing your self-reported score instead.`);
         return;
       }
-      setAnalysis({ scores: data.scores, summary: data.summary });
+      setAnalysis({ scores: data.scores, summary: data.summary, themeFixes: data.themeFixes });
     } catch {
       setAnalysis(null);
       setAnalyzeError("Couldn't analyze those files, showing your self-reported score instead.");
@@ -123,10 +118,10 @@ export function PortfolioScorer() {
   }
   if (stage === "quiz") {
     return (
-      <QuizFlow
-        step={step}
+      <ThemeFlow
+        themeIndex={step}
         answers={answers}
-        onSelect={selectAnswer}
+        onToggle={toggleAnswer}
         onPrev={goPrev}
         onNext={goNext}
         onFinish={finishQuiz}
@@ -163,8 +158,8 @@ function LandingHero({ onStart }: { onStart: () => void }) {
         </h1>
         <p className="mt-5 max-w-[48ch] text-lg text-pretty text-muted-foreground">
           A 90-second evaluation across the six things hiring panels actually
-          screen for. Answer honestly, one question at a time, and get your
-          scored report card.
+          screen for. Check off what&apos;s true, theme by theme, and get
+          your scored report card.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-4">
           <Button size="lg" className="h-12 px-7 text-base" onClick={onStart}>
@@ -244,12 +239,11 @@ function OnboardingStep({ onStart, onBack }: { onStart: () => void; onBack: () =
       <div className="animate-step-in">
         <p className="text-lg font-semibold text-muted-foreground">Before you start</p>
         <h2 className="mt-3 text-2xl font-semibold text-balance text-foreground sm:text-3xl">
-          You&apos;ll answer {FLAT.length} quick questions.
+          You&apos;ll go through {THEMES.length} quick themes.
         </h2>
         <p className="mt-4 text-muted-foreground">
-          {FLAT.length} statements across the six things hiring panels actually screen for.
-          Answer honestly, your portfolio is scored directly from what you tick here, so take it
-          seriously.
+          Each theme will contain a few statements. Select all that hold true for you. Your
+          portfolio is scored directly from what you choose, so be honest and take it seriously.
         </p>
         <Button size="lg" className="mt-8 h-12 px-7 text-base" onClick={onStart}>
           Start
@@ -268,84 +262,75 @@ function OnboardingStep({ onStart, onBack }: { onStart: () => void; onBack: () =
   );
 }
 
-function QuizFlow({
-  step,
+function ThemeFlow({
+  themeIndex,
   answers,
-  onSelect,
+  onToggle,
   onPrev,
   onNext,
   onFinish,
 }: {
-  step: number;
+  themeIndex: number;
   answers: Answers;
-  onSelect: (key: string, value: boolean) => void;
+  onToggle: (key: string, value: boolean) => void;
   onPrev: () => void;
   onNext: () => void;
   onFinish: () => void;
 }) {
-  const q = FLAT[step];
-  const selected = q.key in answers ? answers[q.key] : undefined;
-  const isLast = step === FLAT.length - 1;
-  const canGenerate = isLast && selected !== undefined;
+  const theme = THEMES[themeIndex];
+  const isLast = themeIndex === THEMES.length - 1;
 
   return (
     <section className="mx-auto flex min-h-[88dvh] max-w-xl flex-col justify-center px-4 py-12 sm:px-6">
       <div className="h-1 w-full overflow-hidden rounded-full bg-muted">
         <div
           className="h-full rounded-full bg-primary transition-all duration-300"
-          style={{ width: `${((step + 1) / FLAT.length) * 100}%` }}
+          style={{ width: `${((themeIndex + 1) / THEMES.length) * 100}%` }}
         />
       </div>
       <p className="mt-4 text-lg font-semibold text-muted-foreground">
-        Question {step + 1} of {FLAT.length}
+        Theme {themeIndex + 1} of {THEMES.length}
       </p>
 
-      <div key={q.key} className="animate-step-in mt-3">
-        <h2 className="min-h-24 text-2xl font-semibold text-balance text-foreground sm:min-h-[108px] sm:text-3xl">
-          {q.item.text}
+      <div key={theme.name} className="animate-step-in mt-3">
+        <h2 className="text-2xl font-semibold text-balance text-foreground sm:text-3xl">
+          {theme.name}
         </h2>
+        <p className="mt-2 text-muted-foreground">
+          Select all that apply for you.
+        </p>
 
-        <div className="mt-7 flex flex-col gap-3">
-          <button
-            type="button"
-            onClick={() => onSelect(q.key, true)}
-            className={`flex items-center gap-3 rounded-2xl border-2 px-5 py-4 text-left text-base font-medium transition-colors ${
-              selected === true
-                ? "border-primary bg-primary/5 text-foreground"
-                : "border-border text-foreground hover:border-primary/40"
-            }`}
-          >
-            <span
-              className={`grid size-7 shrink-0 place-items-center rounded-full ${
-                selected === true ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-              }`}
-            >
-              <Check weight="bold" size={14} />
-            </span>
-            That&apos;s true for me
-          </button>
-
-          <button
-            type="button"
-            onClick={() => onSelect(q.key, false)}
-            className={`flex items-center gap-3 rounded-2xl border-2 px-5 py-4 text-left text-base font-medium transition-colors ${
-              selected === false
-                ? "border-primary bg-primary/5 text-foreground"
-                : "border-border text-foreground hover:border-primary/40"
-            }`}
-          >
-            <span
-              className={`grid size-7 shrink-0 place-items-center rounded-full ${
-                selected === false ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-              }`}
-            >
-              <XIcon weight="bold" size={14} />
-            </span>
-            Not true for me
-          </button>
+        <div className="mt-6 flex flex-col gap-3">
+          {theme.items.map((item, itemIndex) => {
+            const key = `${themeIndex}_${itemIndex}`;
+            const checked = !!answers[key];
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => onToggle(key, !checked)}
+                className={`flex items-start gap-3 rounded-2xl border-2 px-5 py-4 text-left text-base font-medium transition-colors ${
+                  checked
+                    ? "border-primary bg-primary/5 text-foreground"
+                    : "border-border text-foreground hover:border-primary/40"
+                }`}
+              >
+                <span
+                  className={`mt-0.5 grid size-6 shrink-0 place-items-center rounded-md border-2 ${
+                    checked
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border text-transparent"
+                  }`}
+                >
+                  <Check weight="bold" size={14} />
+                </span>
+                {item.text}
+              </button>
+            );
+          })}
         </div>
 
-        {canGenerate && (
+        {isLast && (
           <Button size="lg" className="animate-step-in mt-6 h-12 w-full text-base" onClick={onFinish}>
             Continue to my score card
           </Button>
@@ -359,7 +344,7 @@ function QuizFlow({
         </Button>
 
         {!isLast && (
-          <Button type="button" variant="outline" onClick={onNext} disabled={selected === undefined}>
+          <Button type="button" variant="outline" onClick={onNext}>
             Next
             <ArrowLeft size={14} className="rotate-180" />
           </Button>
@@ -443,9 +428,7 @@ function PortfolioUploadStep({
         </h2>
         <p className="mt-3 text-muted-foreground">
           Right click on your deployed portfolio webpage and save it as HTML. Upload your homepage
-          and best case study as HTML, plus your resume (optional) so we can cross-reference the
-          two. Questions about LinkedIn, talks, or anything else we can&apos;t see still rely on
-          your own answers. This step is optional.
+          and best case study as HTML.
         </p>
 
         <div className="mt-6 flex flex-col gap-4">
@@ -507,7 +490,7 @@ function ResultCard({
   analyzeError: string | null;
   onRetake: () => void;
 }) {
-  const { band, bandIndex, percent, themePercents, topFixes } = useMemo(
+  const { band, percent, themePercents, topFixes } = useMemo(
     () => (analysis ? summarize(analysis.scores) : scoreOf(answers)),
     [answers, analysis]
   );
@@ -519,7 +502,9 @@ function ResultCard({
       const res = await fetch("/api/score/pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(analysis ? { scores: analysis.scores } : { answers }),
+        body: JSON.stringify(
+          analysis ? { scores: analysis.scores, themeFixes: analysis.themeFixes } : { answers }
+        ),
       });
       if (!res.ok) return;
       const blob = await res.blob();
@@ -546,26 +531,12 @@ function ResultCard({
         <p className="mt-2.5 max-w-[56ch] text-muted-foreground">{band.msg}</p>
 
         {analysis && (
-          <div className="mt-4 rounded-xl border border-primary/15 bg-primary/5 p-4 text-sm text-muted-foreground">
-            <span className="font-medium text-foreground">Scored from your uploaded pages:</span>{" "}
-            {analysis.summary}
+          <div className="mt-4 rounded-xl bg-primary/10 p-4 text-sm text-foreground">
+            <p className="font-semibold">Portfolio snapshot</p>
+            <p className="mt-1">{analysis.summary}</p>
           </div>
         )}
         {analyzeError && <p className="mt-2.5 text-sm text-muted-foreground">{analyzeError}</p>}
-
-        <div className="mt-6 grid grid-cols-4 gap-1.5">
-          {BANDS.map((b, k) => (
-            <div
-              key={b.name}
-              className={`h-2.5 rounded-full ${k === bandIndex ? "bg-primary" : "bg-muted"}`}
-            />
-          ))}
-        </div>
-        <div className="mt-1 grid grid-cols-4 gap-1.5 text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">
-          {BAND_PERCENT_LABELS.map((label) => (
-            <span key={label}>{label}</span>
-          ))}
-        </div>
 
         <div className="mt-8 border-t border-border pt-6">
           <h2 className="text-lg font-semibold text-foreground">Top fixes</h2>
@@ -573,15 +544,21 @@ function ResultCard({
             <p className="mt-2 text-muted-foreground">Nothing scored against you, nice work.</p>
           ) : (
             <ul className="mt-3 space-y-4">
-              {topFixes.map((t) => (
-                <li key={t.name}>
-                  <div className="flex items-center justify-between text-sm font-semibold text-foreground">
-                    <span>{t.name}</span>
-                    <span className="text-muted-foreground tabular-nums">{t.percent} / 100</span>
-                  </div>
-                  <p className="mt-1 text-sm text-muted-foreground">{t.fix}</p>
-                </li>
-              ))}
+              {topFixes.map((t) => {
+                const personalizedFix = analysis?.themeFixes.find((f) => f.themeName === t.name)?.fix;
+                return (
+                  <li key={t.name}>
+                    <div className="flex items-center justify-between text-sm font-semibold text-foreground">
+                      <span>{t.name}</span>
+                      <span className="text-muted-foreground tabular-nums">{t.percent} / 100</span>
+                    </div>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      <span className="font-semibold text-foreground">Fix: </span>
+                      {personalizedFix ?? t.fix}
+                    </p>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>
