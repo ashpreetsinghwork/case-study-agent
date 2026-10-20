@@ -42,6 +42,22 @@ export async function listProjectFiles(projectId: string, relativeDir: string) {
   return data.filter((entry) => entry.id !== null); // list() also returns placeholder "folders"
 }
 
+// Same bucket, separate top-level prefix: the uploaded homepage/case-study/
+// resume from a /score portfolio scan, kept forever for reference. Keyed by
+// a random id (not a project id — this flow is anonymous/pre-signup).
+export async function putScorecardFile(
+  uploadId: string,
+  filename: string,
+  body: Blob | ArrayBuffer | ArrayBufferView | string
+) {
+  const { error } = await getDb()
+    .storage.from(BUCKET)
+    .upload(`scorecard/${uploadId}/${filename}`, body, { upsert: true });
+  if (error) {
+    throw new Error(`Failed to archive ${filename} for upload ${uploadId}: ${error.message}`);
+  }
+}
+
 export type StageStatus = "pending" | "running" | "done" | "failed";
 export type Stage = "organiser" | "strategist" | "architect" | "reviewer";
 

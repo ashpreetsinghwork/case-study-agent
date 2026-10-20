@@ -55,7 +55,11 @@ export function PortfolioScorer() {
     setStage("quiz");
   }
 
-  function submitScorecard(finalAnalysis: Analysis | null, finalError: string | null) {
+  function submitScorecard(
+    finalAnalysis: Analysis | null,
+    finalError: string | null,
+    uploadId?: string
+  ) {
     fetch("/api/score/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -66,6 +70,7 @@ export function PortfolioScorer() {
         summary: finalAnalysis?.summary,
         themeFixes: finalAnalysis?.themeFixes,
         analyzeError: finalError,
+        uploadId,
       }),
       keepalive: true,
     }).catch(() => {});
@@ -89,6 +94,7 @@ export function PortfolioScorer() {
     const timeout = setTimeout(() => controller.abort(), 45000);
     let finalAnalysis: Analysis | null = null;
     let finalError: string | null = null;
+    let uploadId: string | undefined;
     try {
       const formData = new FormData();
       formData.append("homepage", homepage);
@@ -106,7 +112,9 @@ export function PortfolioScorer() {
         summary: string;
         accessible: boolean;
         themeFixes: { themeName: string; fix: string }[];
+        uploadId: string;
       };
+      uploadId = data.uploadId;
       if (!data.accessible) {
         finalError = `Couldn't read those pages. ${data.summary} Showing your self-reported score instead.`;
       } else {
@@ -118,7 +126,7 @@ export function PortfolioScorer() {
       clearTimeout(timeout);
       setAnalysis(finalAnalysis);
       setAnalyzeError(finalError);
-      submitScorecard(finalAnalysis, finalError);
+      submitScorecard(finalAnalysis, finalError, uploadId);
       setStage("results");
     }
   }

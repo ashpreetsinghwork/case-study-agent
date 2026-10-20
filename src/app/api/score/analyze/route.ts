@@ -1,6 +1,8 @@
+import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import type { ResponseInputMessageContentList } from "openai/resources/responses/responses";
 import { generateStructured } from "@/lib/llm";
+import { putScorecardFile } from "@/lib/storage";
 import { portfolioAnalysisSchema } from "@/schemas/portfolio-analysis";
 import { FLAT, scoreOf, type Answers } from "@/lib/portfolio-score";
 
@@ -71,6 +73,22 @@ export async function POST(request: Request) {
   const [homepageHtml, caseStudyHtml] = await Promise.all([homepageFile.text(), caseStudyFile.text()]);
   const homepageText = htmlToText(homepageHtml);
   const caseStudyText = htmlToText(caseStudyHtml);
+
+  // Archive what was uploaded, kept forever for reference. Best-effort: a
+  // storage hiccup shouldn't block someone from getting their score.
+  const uploadId = randomUUID();
+  const archiveUploads = [
+    putScorecardFile(uploadId, "homepage.html", homepageHtml),
+    putScorecardFile(uploadId, "case-study.html", caseStudyHtml),
+  ];
+  if (hasResume) {
+    archiveUploads.push(
+      putScorecardFile(uploadId, `resume-${resumeFile.name}`, await resumeFile.arrayBuffer())
+    );
+  }
+  await Promise.all(archiveUploads).catch((err) =>
+    console.error("Failed to archive uploaded portfolio files", err)
+  );
 
   const statementList = askedItems
     .map((f) => `${f.key} [${f.theme.name}]: ${f.item.text}`)
@@ -156,6 +174,7 @@ Do not use em dashes.`;
     summary: analysis.summary,
     accessible: analysis.accessible,
     themeFixes,
+    uploadId,
   });
 }
 

@@ -44,6 +44,7 @@ export async function POST(request: Request) {
     theme_fixes: Array.isArray(body?.themeFixes) ? body.themeFixes : null,
     analyze_error: typeof body?.analyzeError === "string" ? body.analyzeError : null,
     joined_community: (count ?? 0) > 0,
+    upload_id: typeof body?.uploadId === "string" ? body.uploadId : null,
   });
 
   if (error) {
