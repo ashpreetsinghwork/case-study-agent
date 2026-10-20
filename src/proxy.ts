@@ -6,7 +6,7 @@ import { NextResponse, type NextRequest } from "next/server";
 // session cookie on every request, per @supabase/ssr's documented pattern
 // (the server client in src/lib/supabase/server.ts otherwise sees a stale
 // token once the access token expires mid-session).
-const PUBLIC_PATHS = ["/login", "/auth/callback", "/api/score"];
+const PUBLIC_PATHS = ["/login", "/auth/callback", "/api/score", "/api/community"];
 
 export async function proxy(request: NextRequest) {
   const response = NextResponse.next({ request });

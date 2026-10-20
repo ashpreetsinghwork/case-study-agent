@@ -1,5 +1,6 @@
 import { Nav } from "@/components/site/nav";
 import { Hero } from "@/components/site/hero";
+import { CommunityBanner } from "@/components/site/community-banner";
 import { Pipeline } from "@/components/site/pipeline";
 import { Outputs } from "@/components/site/outputs";
 import { AgentDemo } from "@/components/site/agent-demo";
@@ -13,6 +14,9 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
+        <section className="px-4 py-16 sm:px-6">
+          <CommunityBanner size="full" source="homepage" />
+        </section>
         <Pipeline />
         <Outputs />
         <AgentDemo />

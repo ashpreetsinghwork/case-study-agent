@@ -3,9 +3,18 @@
 import { useMemo, useRef, useState } from "react";
 import { ArrowLeft, Check, CircleNotch, DownloadSimple, X as XIcon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
+import { CommunityBanner } from "@/components/site/community-banner";
+import { getAnonId } from "@/lib/anon-id";
 import { BANDS, THEMES, scoreOf, summarize, type Answers } from "@/lib/portfolio-score";
 
-type Stage = "landing" | "onboarding" | "quiz" | "portfolioUpload" | "loading" | "results";
+type Stage =
+  | "landing"
+  | "community"
+  | "onboarding"
+  | "quiz"
+  | "portfolioUpload"
+  | "loading"
+  | "results";
 
 interface Analysis {
   scores: number[];
@@ -46,11 +55,28 @@ export function PortfolioScorer() {
     setStage("quiz");
   }
 
+  function submitScorecard(finalAnalysis: Analysis | null, finalError: string | null) {
+    fetch("/api/score/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sessionId: getAnonId(),
+        answers,
+        scores: finalAnalysis?.scores,
+        summary: finalAnalysis?.summary,
+        themeFixes: finalAnalysis?.themeFixes,
+        analyzeError: finalError,
+      }),
+      keepalive: true,
+    }).catch(() => {});
+  }
+
   function skipScan() {
     setAnalysis(null);
     setAnalyzeError(null);
     setLoadingLabel("Scoring your portfolio…");
     setStage("loading");
+    submitScorecard(null, null);
     setTimeout(() => setStage("results"), 1000);
   }
 
@@ -61,6 +87,8 @@ export function PortfolioScorer() {
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 45000);
+    let finalAnalysis: Analysis | null = null;
+    let finalError: string | null = null;
     try {
       const formData = new FormData();
       formData.append("homepage", homepage);
@@ -80,16 +108,17 @@ export function PortfolioScorer() {
         themeFixes: { themeName: string; fix: string }[];
       };
       if (!data.accessible) {
-        setAnalysis(null);
-        setAnalyzeError(`Couldn't read those pages. ${data.summary} Showing your self-reported score instead.`);
-        return;
+        finalError = `Couldn't read those pages. ${data.summary} Showing your self-reported score instead.`;
+      } else {
+        finalAnalysis = { scores: data.scores, summary: data.summary, themeFixes: data.themeFixes };
       }
-      setAnalysis({ scores: data.scores, summary: data.summary, themeFixes: data.themeFixes });
     } catch {
-      setAnalysis(null);
-      setAnalyzeError("Couldn't analyze those files, showing your self-reported score instead.");
+      finalError = "Couldn't analyze those files, showing your self-reported score instead.";
     } finally {
       clearTimeout(timeout);
+      setAnalysis(finalAnalysis);
+      setAnalyzeError(finalError);
+      submitScorecard(finalAnalysis, finalError);
       setStage("results");
     }
   }
@@ -103,7 +132,15 @@ export function PortfolioScorer() {
   }
 
   if (stage === "landing") {
-    return <LandingHero onStart={() => setStage("onboarding")} />;
+    return <LandingHero onStart={() => setStage("community")} />;
+  }
+  if (stage === "community") {
+    return (
+      <CommunityStep
+        onContinue={() => setStage("onboarding")}
+        onBack={() => setStage("landing")}
+      />
+    );
   }
   if (stage === "onboarding") {
     return (
@@ -229,6 +266,31 @@ function LandingHero({ onStart }: { onStart: () => void }) {
           </div>
         </div>
       </div>
+    </section>
+  );
+}
+
+function CommunityStep({
+  onContinue,
+  onBack,
+}: {
+  onContinue: () => void;
+  onBack: () => void;
+}) {
+  return (
+    <section className="mx-auto flex min-h-[88dvh] max-w-xl flex-col justify-center px-4 py-12 sm:px-6">
+      <div className="animate-step-in">
+        <CommunityBanner source="score" onContinue={onContinue} />
+      </div>
+
+      <button
+        type="button"
+        onClick={onBack}
+        className="mt-10 flex items-center gap-1.5 self-start text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft size={14} />
+        Back
+      </button>
     </section>
   );
 }
