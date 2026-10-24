@@ -3,7 +3,7 @@
 Pi needed thumbnails for thousands of pieces of content, way more than
 Course Listing ever did, so the manual process from that project wasn't
 going to scale. Built a prompt-writer script on top of an image model to
-automate it.
+automate it via.
 
 ## Demo numbers
 
